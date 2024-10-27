@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ document.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9; /* Светлый фон */
+            color: #333; /* Темный текст */
+            margin: 0;
+            padding: 20px;
+        }
+        h2, h3 {
+            text-align: center;
+            color: #444; /* Цвет заголовков */
+        }
+        p {
+            text-align: center;
+        }
+        form {
+            text-align: center;
+            margin-top: 20px;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 80%;
+            background-color: #ffffff; /* Белый фон таблицы */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Легкая тень */
+            border-radius: 5px;
+        }
+        th, td {
+            border: 1px solid #ddd; /* Светлые границы */
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #e9ecef; /* Светло-серый фон для заголовков */
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            background-color: #007BFF; /* Синий цвет кнопок */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3; /* Темно-синий при наведении */
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007BFF; /* Синий цвет ссылок */
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h2>Документ: {{ document.title }}</h2>
+     <!--<p><strong>Содержание:</strong> {{ document.content }}</p>--> 
+
+    <h3>Уникальные иероглифы:</h3>
+
+    <form method="POST" action="{{ url_for('delete_characters', doc_id=document.id) }}">
+        {% if new_chars | length == 0 and old_chars | length == 0 %}
+            <p>Иероглифов нет</p>
+        {% else %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Иероглиф</th>
+                        <th>
+                            <label for="select-all">Выбрать</label>
+                            <input type="checkbox" id="select-all">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {# Сначала выводим новые иероглифы #}
+                    {% for char in new_chars %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td class="character-text">{{ char.symbol }}</td>
+                        <td><input type="checkbox" name="characters_to_delete" value="{{ char.id }}"></td>
+                    </tr>
+                    {% endfor %}
+
+                    {# Затем выводим старые иероглифы #}
+                    {% for char in old_chars %}
+                    <tr>
+                        <td>{{ loop.index + new_chars | length }}</td>
+                        <td class="character-text">{{ char.symbol }}</td>
+                        <td><input type="checkbox" name="characters_to_delete" value="{{ char.id }}"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <div style="margin-top: 20px;">
+            <button type="button" id="copy-all-horizontal">Копировать все (гориз.)</button>
+            <button type="button" id="copy-all-vertical">Копировать все (вертик.)</button>
+            <button type="button" id="copy-selected-horizontal-no-numbers">Копировать выбранные (гориз.)</button>
+            <button type="button" id="copy-selected-vertical">Копировать выбранные (вертик.)</button>
+        </div>
+        
+        <button type="submit" style="margin-top: 20px;">Удалить выбранное</button>
+    </form>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <button id="download-all" style="margin-right: 10px;">Скачать все</button>
+        <button id="download-selected">Скачать выбранные</button>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="{{ url_for('home') }}">Вернуться на главную</a>
+    </div>
+
+    <script>
+        // Обработчик для выбора всех чекбоксов
+        document.getElementById('select-all').addEventListener('change', function() {
+            const isChecked = this.checked;
+            document.querySelectorAll('input[name="characters_to_delete"]').forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        });
+
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+        }
+
+        function getSelectedCharacters() {
+            return Array.from(document.querySelectorAll('input[name="characters_to_delete"]:checked'))
+                        .map(checkbox => checkbox.closest('tr').querySelector('.character-text').textContent.trim());
+        }
+
+        // Скачать все иероглифы
+        document.getElementById('download-all').addEventListener('click', function() {
+            const allCharacters = Array.from(document.querySelectorAll('.character-text'))
+                .map(el => el.textContent.trim());
+            if (allCharacters.length === 0) {
+                alert('Нет доступных иероглифов для скачивания.');
+            } else {
+                const blob = new Blob([allCharacters.join('\n')], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'все_иероглифы.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        });
+
+        // Скачать выбранные иероглифы
+        document.getElementById('download-selected').addEventListener('click', function() {
+            const selectedCharacters = getSelectedCharacters();
+            if (selectedCharacters.length === 0) {
+                alert('Пожалуйста, выберите хотя бы один иероглиф для скачивания.');
+            } else {
+                const blob = new Blob([selectedCharacters.join('\n')], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'выбранные_иероглифы.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        });
+
+        document.getElementById('copy-all-horizontal').addEventListener('click', function() {
+            const allCharacters = Array.from(document.querySelectorAll('.character-text'))
+                .map(el => el.textContent.trim());
+            if (allCharacters.length === 0) {
+                alert('Нет доступных иероглифов для копирования.');
+            } else {
+                copyToClipboard(allCharacters.join('\t'));
+                alert('Все иероглифы скопированы горизонтально.');
+            }
+        });
+
+        document.getElementById('copy-all-vertical').addEventListener('click', function() {
+            const allCharacters = Array.from(document.querySelectorAll('.character-text'))
+                .map(el => el.textContent.trim());
+            if (allCharacters.length === 0) {
+                alert('Нет доступных иероглифов для копирования.');
+            } else {
+                copyToClipboard(allCharacters.join('\n'));
+                alert('Все иероглифы скопированы вертикально.');
+            }
+        });
+
+        document.getElementById('copy-selected-horizontal-no-numbers').addEventListener('click', function() {
+            const selectedCharacters = getSelectedCharacters();
+            if (selectedCharacters.length === 0) {
+                alert('Пожалуйста, выберите хотя бы один иероглиф.');
+            } else {
+                copyToClipboard(selectedCharacters.join('\t'));
+                alert('Выбранные иероглифы скопированы горизонтально.');
+            }
+        });
+
+        document.getElementById('copy-selected-vertical').addEventListener('click', function() {
+            const selectedCharacters = getSelectedCharacters();
+            if (selectedCharacters.length === 0) {
+                alert('Пожалуйста, выберите хотя бы один иероглиф.');
+            } else {
+                copyToClipboard(selectedCharacters.join('\n'));
+                alert('Выбранные иероглифы скопированы вертикально.');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добро пожаловать</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9; /* Светлый фон */
+            color: #333; /* Темный текст */
+            margin: 0;
+            padding: 20px;
+            text-align: center; /* Центрирование текста */
+        }
+        h2 {
+            color: #444; /* Цвет заголовка */
+        }
+        h3 {
+            margin-top: 20px;
+            color: #555; /* Цвет подзаголовка */
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px; /* Внутренние отступы */
+            margin: 10px; /* Отступы между кнопками */
+            border: none; /* Убираем рамку */
+            border-radius: 5px; /* Закругленные углы */
+            background-color: #007BFF; /* Цвет главных кнопок */
+            color: white; /* Цвет текста кнопок */
+            text-decoration: none; /* Убираем подчеркивание */
+            cursor: pointer; /* Указатель при наведении */
+            transition: background-color 0.3s; /* Плавный переход для цвета */
+        }
+        .button:hover {
+            background-color: #0056b3; /* Темно-синий при наведении */
+        }
+        .action-button {
+            background-color: #28a745; /* Зеленый цвет для действия */
+        }
+        .action-button:hover {
+            background-color: #218838; /* Темно-зеленый при наведении */
+        }
+        ul {
+            list-style-type: none; /* Удаление маркеров */
+            padding: 0; /* Удаление отступов */
+        }
+        li {
+            margin: 10px 0; /* Отступы между элементами списка */
+            padding: 10px;
+            background-color: #ffffff; /* Белый фон для элементов списка */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Легкая тень */
+            border-radius: 5px; /* Закругленные углы */
+            display: inline-block; /* Визуальное представление в строку */
+            width: calc(50% - 20px); /* Две колонки */
+        }
+    </style>
+</head>
+<body>
+    <h2>Добро пожаловать, {{ current_user.username }}!</h2>
+
+    <button class="button" onclick="window.location.href='{{ url_for('create_document') }}'">Создать документ</button>
+    <button class="button" onclick="window.location.href='{{ url_for('logout') }}'">Выйти</button>
+
+    <h3>Ваши документы:</h3>
+    <ul>
+      {% for doc in documents %}
+        <li>
+          {{ loop.index }}. {{ doc.title }}
+          <button class="action-button" onclick="window.location.href='{{ url_for('view_document', doc_id=doc.id) }}'">Просмотреть</button>
+          <button class="action-button" onclick="window.location.href='{{ url_for('edit_document', doc_id=doc.id) }}'">Редактировать</button>
+          <button class="action-button" 
+                  onclick="if (confirm('Вы уверены, что хотите удалить этот документ?')) { window.location.href='{{ url_for('delete_document', doc_id=doc.id) }}'; }">Удалить</button>
+        </li>
+      {% else %}
+        <li>У вас пока нет документов</li>
+      {% endfor %}
+    </ul>
+</body>
+</html>
