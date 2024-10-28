@@ -54,7 +54,45 @@
             display: inline-block; /* Визуальное представление в строку */
             width: calc(50% - 20px); /* Две колонки */
         }
+        /* Стили для окна подтверждения удаления */
+        #confirmDeleteModal {
+            display: none; /* Скрыто по умолчанию */
+            position: fixed; /* Фиксированное положение */
+            z-index: 1000; /* На переднем плане */
+            left: 0;
+            top: 0;
+            width: 100%; /* Полная ширина */
+            height: 100%; /* Полная высота */
+            overflow: auto; /* Включаем прокрутку, если нужно */
+            background-color: rgba(0,0,0,0.5); /* Полупрозрачный черный фон */
+            justify-content: center; /* Центрирование содержимого по горизонтали */
+            align-items: center; /* Центрирование содержимого по вертикали */
+        }
+        .modal-content {
+            background-color: #fefefe; /* Белый фон для окна */
+            margin: 15% auto; /* 15% сверху и центрирование по горизонтали */
+            padding: 20px; /* Внутренние отступы */
+            border: 1px solid #888; /* Рамка */
+            width: 80%; /* Ширина окна */
+            max-width: 500px; /* Максимальная ширина окна */
+            border-radius: 5px; /* Закругленные углы */
+            text-align: center; /* Центрирование текста */
+        }
+        .modal-button {
+            margin: 10px;
+        }
     </style>
+    <script>
+        function showConfirmDeleteModal(docTitle, deleteUrl) {
+            document.getElementById('confirmDocTitle').innerText = docTitle;
+            document.getElementById('confirmDeleteForm').action = deleteUrl;
+            document.getElementById('confirmDeleteModal').style.display = 'flex'; // Показываем окно подтверждения
+        }
+
+        function closeConfirmDeleteModal() {
+            document.getElementById('confirmDeleteModal').style.display = 'none'; // Скрываем окно подтверждения
+        }
+    </script>
 </head>
 <body>
     <h2>Добро пожаловать, {{ current_user.username }}!</h2>
@@ -69,12 +107,23 @@
           {{ loop.index }}. {{ doc.title }}
           <button class="action-button" onclick="window.location.href='{{ url_for('view_document', doc_id=doc.id) }}'">Просмотреть</button>
           <button class="action-button" onclick="window.location.href='{{ url_for('edit_document', doc_id=doc.id) }}'">Редактировать</button>
-          <button class="action-button" 
-                  onclick="if (confirm('Вы уверены, что хотите удалить этот документ?')) { window.location.href='{{ url_for('delete_document', doc_id=doc.id) }}'; }">Удалить</button>
+          <button class="action-button" onclick="showConfirmDeleteModal('{{ doc.title }}', '{{ url_for('delete_document', doc_id=doc.id) }}')">Удалить</button>
         </li>
       {% else %}
         <li>У вас пока нет документов</li>
       {% endfor %}
     </ul>
+
+    <!-- Модальное окно подтверждения удаления -->
+    <div id="confirmDeleteModal">
+        <div class="modal-content">
+            <h3>Подтверждение удаления</h3>
+            <p>Вы уверены, что хотите удалить документ "<span id="confirmDocTitle"></span>"?</p>
+            <form id="confirmDeleteForm" method="POST">
+                <button type="submit" class="button modal-button">Да</button>
+                <button type="button" class="button modal-button" onclick="closeConfirmDeleteModal()">Нет</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
