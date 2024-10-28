@@ -214,11 +214,12 @@ def edit_document(doc_id):
 
             db.session.commit()
             flash('Документ успешно обновлён!')
-            return redirect(url_for('home'))
+            return redirect(url_for('view_document', doc_id=doc_id))  # Переход на страницу просмотра документа
         else:
             flash('Пожалуйста, заполните все поля.')
 
     return render_template('edit_document.html', document=document)
+
 
 
 
