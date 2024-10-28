@@ -7,89 +7,123 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9; /* Светлый фон */
-            color: #333; /* Темный текст */
+            background-color: #f9f9f9;
+            color: #333;
             margin: 0;
             padding: 20px;
-            text-align: center; /* Центрирование текста */
         }
+
         h2 {
-            color: #444; /* Цвет заголовка */
+            color: #333;
+            margin: 0;
+            position: absolute;
+            top: 20px;
+            left: 20px;
         }
+
+        a {
+            text-decoration: none;
+            color: #000000;
+        }
+
         h3 {
-            margin: 0; /* Убираем отступы сверху и снизу */
-            color: #555; /* Цвет подзаголовка */
+            margin: 20px 0;
+            text-align: left;
         }
-        .button {
-            display: inline-block;
-            padding: 10px 20px; /* Внутренние отступы */
-            margin: 10px; /* Отступы между кнопками */
-            border: none; /* Убираем рамку */
-            border-radius: 5px; /* Закругленные углы */
-            background-color: #007BFF; /* Цвет главных кнопок */
-            color: white; /* Цвет текста кнопок */
-            text-decoration: none; /* Убираем подчеркивание */
-            cursor: pointer; /* Указатель при наведении */
-            transition: background-color 0.3s; /* Плавный переход для цвета */
-        }
-        .button:hover {
-            background-color: #0056b3; /* Темно-синий при наведении */
-        }
-        .action-button {
-            background-color: #28a745; /* Зеленый цвет для действия */
-        }
-        .action-button:hover {
-            background-color: #218838; /* Темно-зеленый при наведении */
-        }
-        ul {
-            list-style-type: none; /* Удаление маркеров */
-            padding: 0; /* Удаление отступов */
-        }
-        li {
-            margin: 10px 0; /* Отступы между элементами списка */
-            padding: 10px;
-            background-color: #ffffff; /* Белый фон для элементов списка */
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Легкая тень */
-            border-radius: 5px; /* Закругленные углы */
-            display: inline-block; /* Визуальное представление в строку */
-            width: calc(50% - 20px); /* Две колонки */
-        }
-        /* Стили для заголовка и кнопки выхода */
+
         .header {
             display: flex;
-            justify-content: space-between; /* Распределяем пространство между элементами */
-            align-items: center; /* Центрируем по вертикали */
-            margin-bottom: 20px; /* Отступ снизу */
+            justify-content: flex-end; /* Вправо */
+            padding: 10px;
+            background-color: #f1f1f1;
         }
-        /* Стили для контейнера с заголовком */
-        .header-title {
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .action-button {
+            background-color: #28a745;
+        }
+
+        .action-button:hover {
+            background-color: #218838;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto; /* Центрируем контент */
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
             display: flex;
-            align-items: center; /* Центрируем заголовок по вертикали */
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
         }
-        /* Стили для окна подтверждения удаления */
+
+        .doc-index {
+            width: 10%; /* Сужаем колонку нумерации */
+            text-align: center;
+        }
+
+        .doc-title {
+            width: 60%; /* Уменьшаем ширину названия */
+            text-align: left;
+        }
+
+        .doc-buttons {
+            width: 30%; /* Пространство для кнопок */
+            display: flex;
+            gap: 5px;
+        }
+
         #confirmDeleteModal {
-            display: none; /* Скрыто по умолчанию */
-            position: fixed; /* Фиксированное положение */
-            z-index: 1000; /* На переднем плане */
+            display: none;
+            position: fixed;
+            z-index: 1000;
             left: 0;
             top: 0;
-            width: 100%; /* Полная ширина */
-            height: 100%; /* Полная высота */
-            overflow: auto; /* Включаем прокрутку, если нужно */
-            background-color: rgba(0,0,0,0.5); /* Полупрозрачный черный фон */
-            justify-content: center; /* Центрирование содержимого по горизонтали */
-            align-items: center; /* Центрирование содержимого по вертикали */
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
         }
+
         .modal-content {
-            background-color: #fefefe; /* Белый фон для окна */
-            margin: 15% auto; /* 15% сверху и центрирование по горизонтали */
-            padding: 20px; /* Внутренние отступы */
-            border: 1px solid #888; /* Рамка */
-            width: 80%; /* Ширина окна */
-            max-width: 500px; /* Максимальная ширина окна */
-            border-radius: 5px; /* Закругленные углы */
-            text-align: center; /* Центрирование текста */
+            background-color: #fefefe;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
         }
+
         .modal-button {
             margin: 10px;
         }
@@ -98,41 +132,42 @@
         function showConfirmDeleteModal(docTitle, deleteUrl) {
             document.getElementById('confirmDocTitle').innerText = docTitle;
             document.getElementById('confirmDeleteForm').action = deleteUrl;
-            document.getElementById('confirmDeleteModal').style.display = 'flex'; // Показываем окно подтверждения
+            document.getElementById('confirmDeleteModal').style.display = 'flex';
         }
 
         function closeConfirmDeleteModal() {
-            document.getElementById('confirmDeleteModal').style.display = 'none'; // Скрываем окно подтверждения
+            document.getElementById('confirmDeleteModal').style.display = 'none';
         }
     </script>
 </head>
 <body>
-
     <div class="header">
-        <div class="header-title">
-            <h3>Уникальные иероглифы</h3>
-        </div>
         <button class="button" onclick="window.location.href='{{ url_for('logout') }}'">Выйти</button>
     </div>
 
+    <div class="content">
+        <h2><a href="/">УНИКАЛЬНЫЕ ИЕРОГЛИФЫ</a></h2>
 
-    <button class="button" onclick="window.location.href='{{ url_for('create_document') }}'">Создать документ</button>
+        <button class="button" onclick="window.location.href='{{ url_for('create_document') }}'">Создать документ</button>
 
-    <h3>Ваши документы:</h3>
-    <ul>
-      {% for doc in documents %}
-        <li>
-          {{ loop.index }}. {{ doc.title }}
-          <button class="action-button" onclick="window.location.href='{{ url_for('view_document', doc_id=doc.id) }}'">Просмотреть</button>
-          <button class="action-button" onclick="window.location.href='{{ url_for('edit_document', doc_id=doc.id) }}'">Редактировать</button>
-          <button class="action-button" onclick="showConfirmDeleteModal('{{ doc.title }}', '{{ url_for('delete_document', doc_id=doc.id) }}')">Удалить</button>
-        </li>
-      {% else %}
-        <li>У вас пока нет документов</li>
-      {% endfor %}
-    </ul>
+        <h3>Ваши документы:</h3>
+        <ul>
+            {% for doc in documents %}
+            <li>
+                <span class="doc-index">{{ loop.index }}.</span>
+                <span class="doc-title">{{ doc.title }}</span>
+                <div class="doc-buttons">
+                    <button class="action-button" onclick="window.location.href='{{ url_for('view_document', doc_id=doc.id) }}'">Просмотреть</button>
+                    <button class="action-button" onclick="window.location.href='{{ url_for('edit_document', doc_id=doc.id) }}'">Редактировать</button>
+                    <button class="action-button" onclick="showConfirmDeleteModal('{{ doc.title }}', '{{ url_for('delete_document', doc_id=doc.id) }}')">Удалить</button>
+                </div>
+            </li>
+            {% else %}
+            <li>У вас пока нет документов</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-    <!-- Модальное окно подтверждения удаления -->
     <div id="confirmDeleteModal">
         <div class="modal-content">
             <h3>Подтверждение удаления</h3>
