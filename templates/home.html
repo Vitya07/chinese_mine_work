@@ -17,7 +17,7 @@
             color: #444; /* Цвет заголовка */
         }
         h3 {
-            margin-top: 20px;
+            margin: 0; /* Убираем отступы сверху и снизу */
             color: #555; /* Цвет подзаголовка */
         }
         .button {
@@ -53,6 +53,18 @@
             border-radius: 5px; /* Закругленные углы */
             display: inline-block; /* Визуальное представление в строку */
             width: calc(50% - 20px); /* Две колонки */
+        }
+        /* Стили для заголовка и кнопки выхода */
+        .header {
+            display: flex;
+            justify-content: space-between; /* Распределяем пространство между элементами */
+            align-items: center; /* Центрируем по вертикали */
+            margin-bottom: 20px; /* Отступ снизу */
+        }
+        /* Стили для контейнера с заголовком */
+        .header-title {
+            display: flex;
+            align-items: center; /* Центрируем заголовок по вертикали */
         }
         /* Стили для окна подтверждения удаления */
         #confirmDeleteModal {
@@ -95,10 +107,16 @@
     </script>
 </head>
 <body>
-    <h2>Добро пожаловать, {{ current_user.username }}!</h2>
+
+    <div class="header">
+        <div class="header-title">
+            <h3>Уникальные иероглифы</h3>
+        </div>
+        <button class="button" onclick="window.location.href='{{ url_for('logout') }}'">Выйти</button>
+    </div>
+
 
     <button class="button" onclick="window.location.href='{{ url_for('create_document') }}'">Создать документ</button>
-    <button class="button" onclick="window.location.href='{{ url_for('logout') }}'">Выйти</button>
 
     <h3>Ваши документы:</h3>
     <ul>
