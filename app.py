@@ -150,8 +150,13 @@ def view_document(doc_id):
     # Очищаем содержание от пробелов и запятых
     cleaned_content = document.content.replace(' ', '').replace(',', '')
 
-    # Получаем уникальные иероглифы из очищенного содержания
-    unique_characters = set(cleaned_content)  # Используем set для уникальных символов
+    # Получаем уникальные иероглифы из очищенного содержания, сохраняя порядок
+    unique_characters = []
+    seen = set()
+    for char in cleaned_content:
+        if char not in seen:
+            seen.add(char)
+            unique_characters.append(char)
 
     new_chars = []
     old_chars = []
@@ -173,7 +178,7 @@ def view_document(doc_id):
 
     return render_template('view_document.html', document=document, new_chars=new_chars, old_chars=old_chars)
 
-# Редактирование документа
+#Редактирование документа
 @app.route('/document/edit/<int:doc_id>', methods=['GET', 'POST'])
 @login_required
 def edit_document(doc_id):
@@ -196,8 +201,14 @@ def edit_document(doc_id):
 
             # Обновляем иероглифы
             Character.query.filter_by(document_id=doc_id).delete()
-            characters = extract_unique_characters(content)
-            for char in characters:
+            unique_characters = []
+            seen = set()
+            for char in content:
+                if char not in seen and char.strip():  # Игнорируем пробелы
+                    seen.add(char)
+                    unique_characters.append(char)
+
+            for char in unique_characters:
                 new_char = Character(symbol=char, document_id=doc_id)
                 db.session.add(new_char)
 
@@ -208,6 +219,8 @@ def edit_document(doc_id):
             flash('Пожалуйста, заполните все поля.')
 
     return render_template('edit_document.html', document=document)
+
+
 
 # Удаление документа
 @app.route('/document/delete/<int:doc_id>', methods=['POST', 'GET'])
@@ -220,12 +233,16 @@ def delete_document(doc_id):
         flash('У вас нет прав на удаление этого документа.')
         return redirect(url_for('home'))
 
-    # Удаляем все связанные иероглифы перед удалением документа
-    Character.query.filter_by(document_id=doc_id).delete()
-    db.session.delete(document)
-    db.session.commit()
-    flash('Документ успешно удалён!')
-    return redirect(url_for('home'))
+    if request.method == 'POST':
+        # Удаляем все связанные иероглифы перед удалением документа
+        Character.query.filter_by(document_id=doc_id).delete()
+        db.session.delete(document)
+        db.session.commit()
+        flash('Документ успешно удалён!')
+        return redirect(url_for('home'))
+
+    return render_template('confirm_delete.html', document=document)  # Отправка на страницу подтверждения удаления
+
 
 # Добавление слова
 @app.route('/word/add', methods=['GET', 'POST'])
