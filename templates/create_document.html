@@ -10,12 +10,31 @@
             background-color: #f5f5f5; /* Светлый фон */
             color: #333; /* Темный текст */
             margin: 0;
-            padding: 20px;
+            padding: 0; /* Убираем отступы у body */
         }
-        h2 {
+
+        /* Стили для заголовка "Уникальные иероглифы" */
+        .unique-title {
+            position: absolute; /* Абсолютное позиционирование */
+            top: 0; /* Убираем отступ сверху */
+            left: 0; /* Убираем отступ слева */
+            padding: 10px 20px; /* Внутренние отступы для эстетики */
+            margin: 0; /* Убираем внешние отступы */
+        }
+
+        .unique-title a {
+            text-decoration: none; /* Убираем подчеркивание */
+            color: #000; /* Устанавливаем черный цвет текста */
+            font-size: 24px; /* Размер текста */
+        }
+
+        /* Заголовок "Создать новый документ" */
+        .create-document {
             text-align: center;
-            color: #000; /* Черный заголовок */
+            margin-top: 100px; /* Отступ сверху для разделения заголовков */
+            color: #000; /* Черный цвет текста */
         }
+
         form {
             max-width: 600px;
             margin: 0 auto;
@@ -24,47 +43,61 @@
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Легкая тень */
         }
+
         label {
             display: block;
             margin-bottom: 10px;
-            color: #333; /* Темный текст для меток */
+            color: #333;
         }
+
         input[type="text"],
         textarea {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
-            border: 1px solid #ccc; /* Светло-серые границы */
+            border: 1px solid #ccc;
             border-radius: 5px;
-            background-color: #f9f9f9; /* Светлый фон для полей ввода */
-            color: #333; /* Темный текст */
+            background-color: #f9f9f9;
+            color: #333;
         }
+
         button {
             padding: 10px 15px;
-            background-color: #007bff; /* Синий фон кнопки */
-            color: #ffffff; /* Белый текст на кнопках */
+            background-color: #007bff;
+            color: #ffffff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
+
         button:hover {
-            background-color: #0056b3; /* Темно-синий цвет кнопки при наведении */
+            background-color: #0056b3;
         }
+
         a {
             display: block;
             text-align: center;
             margin-top: 20px;
             text-decoration: none;
-            color: #007bff; /* Синий цвет ссылки */
+            color: #007bff;
         }
+
         a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h2>Создать новый документ</h2>
+
+    <!-- Заголовок "Уникальные иероглифы" -->
+    <div class="unique-title">
+        <h2><a href="/">УНИКАЛЬНЫЕ ИЕРОГЛИФЫ</a></h2>
+    </div>
+
+    <!-- Заголовок "Создать новый документ" -->
+    <h2 class="create-document">Создать новый документ</h2>
+
     <form method="POST">
         <label for="title">Название документа:</label>
         <input type="text" id="title" name="title" oninput="updateTitle()" required>
