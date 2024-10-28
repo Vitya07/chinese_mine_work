@@ -61,9 +61,27 @@
         a:hover {
             text-decoration: underline;
         }
+
+        .unique-title {
+            position: absolute; /* Абсолютное позиционирование */
+            top: 0; /* Убираем отступ сверху */
+            left: 0; /* Убираем отступ слева */
+            padding: 10px 20px; /* Внутренние отступы для эстетики */
+            margin: 0; /* Убираем внешние отступы */
+        }
+
+        .unique-title a {
+            text-decoration: none; /* Убираем подчеркивание */
+            color: #000; /* Устанавливаем черный цвет текста */
+            font-size: 24px; /* Размер текста */
+        }
     </style>
 </head>
-<body>
+<body><div class="unique-title">
+    <h2><a href="/">УНИКАЛЬНЫЕ ИЕРОГЛИФЫ</a></h2>
+</div>
+<br>
+<br>
     <h1>Редактировать документ</h1>
     <form action="{{ url_for('edit_document', doc_id=document.id) }}" method="POST">
         <label for="title">Название документа:</label>
